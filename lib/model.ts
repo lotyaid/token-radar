@@ -237,12 +237,17 @@ export interface MarketMultiples {
   byCategory: Map<string, { multiple: number; peers: number }>;
 }
 
+/** One live peer's market-cap/TVL ratio, winsorised into the range the model trusts. */
+function peerRatio(p: SnapshotProtocol, model: ModelConstants): number {
+  return Math.min(model.ratio_cap, Math.max(model.ratio_floor, p.mcap_usd! / p.tvl_usd));
+}
+
 /** What the market pays per TVL dollar, learned from the snapshot's live-token protocols. */
 export function marketMultiples(snapshot: Snapshot, model: ModelConstants = MODEL): MarketMultiples {
   const ratios = (list: SnapshotProtocol[]): number[] =>
     list
       .filter((p) => !isPreToken(p) && p.mcap_usd !== null && p.mcap_usd > 0 && p.tvl_usd > 0 && p.category !== 'CEX')
-      .map((p) => Math.min(model.ratio_cap, Math.max(model.ratio_floor, p.mcap_usd! / p.tvl_usd)));
+      .map((p) => peerRatio(p, model));
   const market = median(ratios(snapshot.protocols));
   const byCategory = new Map<string, { multiple: number; peers: number }>();
   const cats = new Map<string, SnapshotProtocol[]>();
