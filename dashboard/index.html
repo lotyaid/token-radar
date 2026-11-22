@@ -3,33 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar: pre-token protocols ranked by what their launch would be worth</title>
+<title>Token Launch Radar v2 — every value term fitted, tested held-out twice</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="dot"></span> TOKEN RADAR</div>
-    <h1>Launches before they exist.</h1>
-    <p class="sub" id="subline">Reading the sealed snapshot&hellip;</p>
-    <p class="model-line" id="model-line"></p>
+    <h1>Token Launch Radar <span class="v2">v2</span></h1>
+    <p class="lede">Every protocol that records no token, ranked by what its launch would be worth —
+    priced by a model whose <strong>every term is fitted</strong> on the snapshot's own tokenised peers
+    and <strong>tested held-out twice</strong>. Launch odds come from the peers' record.
+    An integrity strip up top says what was checked, what was assumed, and what was not verified.</p>
   </div>
 </header>
-<main class="wrap" id="app" aria-busy="true"></main>
-<section class="wrap method">
-  <h2>How this radar values a launch</h2>
-  <p>Most radars price every future token with one flat guess. This one asks the market instead. The snapshot holds
-  protocols whose tokens already trade; for each category it takes the <strong>median market-cap per dollar of TVL</strong>
-  those live peers actually trade at, and values a pre-token protocol at its own TVL times its category's median,
-  adjusted for its 7-day TVL momentum and for how long it has run with no token. Categories with fewer than three
-  live peers fall back to the market-wide median. No protocol name is ever special-cased: one function scores every row.</p>
-  <p>Every row then earns a <strong>verdict</strong> from its implied value and momentum alone: FARM FIRST
-  (implied value at least $100M), STRONG WATCH (at least $25M), WATCH (at least $5M), LONG SHOT (below that).
-  The board covers the whole watchlist and adds the strongest pre-token protocols below its $50M floor, picked by
-  implied value under the same launch test: no token yet, and not a wrapped, staked or bridged product of one that trades.
-  Protocols whose token already trades are kept apart in the Live list, at the market's own values.</p>
-</section>
-<footer class="wrap foot">Built from one sealed DefiLlama snapshot. The page runs with no network; every figure it shows is computed from that snapshot.</footer>
+
+<section class="wrap strip" id="integrity" aria-label="Integrity strip"></section>
+
+<section class="wrap panel" id="validation" aria-label="Held-out validation"></section>
+
+<main class="wrap">
+  <div class="controls" role="search">
+    <input id="q" type="search" placeholder="Search name or slug…" aria-label="Search">
+    <select id="f-verdict" aria-label="Filter by verdict"></select>
+    <select id="f-category" aria-label="Filter by category"></select>
+    <label class="chk"><input id="f-watch" type="checkbox"> Watchlist only</label>
+    <select id="sort" aria-label="Sort board">
+      <option value="rank">Sort: rank</option>
+      <option value="implied">Sort: implied value</option>
+      <option value="tvl">Sort: TVL</option>
+      <option value="odds">Sort: launch odds</option>
+      <option value="change">Sort: 7-day change</option>
+    </select>
+    <span id="count" class="count"></span>
+  </div>
+
+  <table class="board" id="board">
+    <thead><tr>
+      <th>#</th><th>Protocol</th><th>Category</th><th class="num">TVL</th><th class="num">7d</th>
+      <th class="num">Implied value</th><th class="num">Multiple</th><th class="num">Odds</th>
+      <th>Verdict</th><th class="num">Plan cost</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <button id="more" class="more" type="button">Show more rows</button>
+
+  <section id="detail" class="panel detail" hidden></section>
+
+  <section class="panel" id="live" aria-label="Already trading"></section>
+
+  <section class="panel" id="excluded" aria-label="Set aside by the launch test"></section>
+</main>
+
+<footer class="wrap foot" id="method"></footer>
+
+<noscript><p class="wrap">This dashboard needs JavaScript: the board, the validation table and every farm plan are rendered from the data file the program wrote beside it.</p></noscript>
 <script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
